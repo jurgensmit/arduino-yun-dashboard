@@ -1,0 +1,38 @@
+body { 
+	background-color:lightgray 
+}
+
+.tile { 
+	width: 100%; 	
+	display: inline-block;
+	box-sizing: border-box;
+	background: #fff;
+	padding: 10px;		
+	margin: 10px;
+	background-color: blue; color: white
+}
+
+h1.title {
+	margin-top: 10px; 
+	text-align: center;	
+}
+
+.title { 
+	margin-top: 0px; 
+}
+
+.value { 
+	margin-bottom: 0px;
+}
+
+.red {
+	background-color: darkred; color: white
+}
+
+.yellow {
+	background-color: goldenrod; color: white
+}
+
+.green {
+	background-color: green; color: white
+}
