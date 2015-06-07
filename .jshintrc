@@ -24,7 +24,6 @@
     "maxstatements": 40,
     "maxcomplexity": 8,
     "maxlen": 120,
-
     "asi": false,
     "boss": false,
     "debug": false,
@@ -50,10 +49,8 @@
     "supernew": false,
     "validthis": false,
     "noyield": false,
-
     "browser": true,
     "node": true,
-
     "globals": {
         "angular": false
     }
