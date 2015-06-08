@@ -21,6 +21,9 @@ gulp.task('vet', function() {
         .pipe($.jshint.reporter('fail'));
 });
 
+// Default Task
+gulp.task('default', ['vet']);
+
 function log(message) {
     if (typeof message === 'object') {
         for (var item in message) {
