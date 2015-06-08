@@ -96,6 +96,10 @@ void handleIncomingMessages() {
     {
       byte data = Serial1.read();
       if(data == '@') {
+        // Print the received message on the LCD
+        commandBuffer[bufferPointer] = '\0';
+        printMessage((char *)commandBuffer);
+        // Handle the message
         handleMessage();
         bufferPointer = 0;
       }
@@ -104,6 +108,10 @@ void handleIncomingMessages() {
           commandBuffer[bufferPointer++] = data;
         }
       }
+    }
+    else {
+      /* Buffer overrun, start from scratch */
+      bufferPointer = 0;
     }
   }
 }

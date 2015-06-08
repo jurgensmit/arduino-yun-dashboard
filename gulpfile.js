@@ -4,12 +4,6 @@ var config = require('./gulp.config')();
 
 var $ = require('gulp-load-plugins')({lazy: true});
 
-// var jshint = require('gulp-jshint');
-// var jscs = require('gulp-jscs');
-// var util = require('gulp-util');
-// var gulpprint = require('gulp-print');
-// var gulpif = require('gulp-if');
-
 gulp.task('vet', function() {
     log('Analyzing source code with JSHint and JSCS');
     return gulp
