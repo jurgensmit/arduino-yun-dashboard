@@ -35,4 +35,7 @@ This project can be a template for many other projects which need to connect the
 6. Green Led + 1 kOhm Resistor
 7. Red Led + 1 kOhm Resistor
 8. Yellow Led + 1 kOhm Resistor
+
+Optionally
+
 9. Grove 2x16 LCD Display (connected via i2c)
