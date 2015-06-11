@@ -26,3 +26,12 @@ This project can be a template for many other projects which need to connect the
 11. In a browser navigate to http://<the ip address of your yun>:8080
 
 ## What you need
+
+1. Arduino Yún
+2. HC-SR04 Ultrasonic Distance Sensor
+3. Grove Temperature Sensor
+4. Grove Rotary Angle Sensor
+5. Grove Light Sensor
+3. Green Led + 1 kOhm Resistor
+4. Red Led + 1 kOhm Resistor
+5. Yellow Led + 1 kOhm Resistor
