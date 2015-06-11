@@ -1,5 +1,10 @@
 #!/usr/bin/python27
-
+#
+# Web server to serve the static pages located in the subfolder ./public
+#  
+# The server also handles WebSocket requests of clients to push and
+# receive sensor values to the ATmega microcontroller in real-time.
+#
 import tornado.httpserver
 import tornado.ioloop
 import tornado.web
@@ -95,7 +100,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         self.write_message(json.dumps(latestData))
 
     def on_message(self, message):
-        print "tornado received from client: " + message
         self.process_client_message(str(message))
 
     def on_close(self):
@@ -122,7 +126,6 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             arduino_message = "@X:@"
         
         if(arduino_message <> ""):
-            print "sending to arduino: " + arduino_message
             q = self.application.settings.get("queue")
             q.put(arduino_message)
 

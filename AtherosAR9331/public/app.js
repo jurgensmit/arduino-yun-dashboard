@@ -50,37 +50,40 @@
         }
     ]);
 
-    dashboardApp.factory('websocket', ['$q', '$rootScope', function ($q, $rootScope) {
-        var Service = {};
+    dashboardApp.factory('websocket', ['$q', '$rootScope', '$location',
+        function ($q, $rootScope, $location) {
+            var Service = {};
 
-        // Create our websocket object with the address to the websocket
-        var ws = new WebSocket('ws://192.168.178.35:8080/ws');
+            // Create our websocket object with the address to the websocket
+            var websocketUrl = 'ws://' + $location.host() + ':' + $location.port() + '/ws';
+            var ws = new WebSocket(websocketUrl);
 
-        ws.onopen = function () {
-            console.log('WebSocket opened');
-        };
-
-        ws.onclose = function () {
-            console.log('WebSocket closed');
-        };
-
-        Service.on = function (callback) {
-            ws.onmessage = function (message) {
-                console.log('Received data from websocket: ', message);
-                var data = angular.fromJson(message.data);
-                $rootScope.$apply(function () {
-                    callback(data);
-                });
+            ws.onopen = function () {
+                console.log('WebSocket opened');
             };
-        };
 
-        Service.sendRequest = function (request) {
-            console.log('Sending request', request);
-            ws.send(request);
-        };
+            ws.onclose = function () {
+                console.log('WebSocket closed');
+            };
 
-        return Service;
-    }]);
+            Service.on = function (callback) {
+                ws.onmessage = function (message) {
+                    console.log('Received data from websocket: ', message);
+                    var data = angular.fromJson(message.data);
+                    $rootScope.$apply(function () {
+                        callback(data);
+                    });
+                };
+            };
+
+            Service.sendRequest = function (request) {
+                console.log('Sending request', request);
+                ws.send(request);
+            };
+
+            return Service;
+        }
+    ]);
 
     dashboardApp.filter('orderObjectBy', function () {
         return function (items, field, reverse) {
@@ -102,9 +105,9 @@
         return {
             restrict: 'E',
             template:
-                '<div class="tile {{tile.class}}" ng-click="toggleLed({ color: tile.class })">' +
-                '<h3 class="title">{{tile.title}}</h3>' +
-                '<p class="value">&nbsp;{{tile.value}}{{tile.unit}}</p></div>',
+            '<div class="tile {{tile.class}}" ng-click="toggleLed({ color: tile.class })">' +
+            '<h3 class="title">{{tile.title}}</h3>' +
+            '<p class="value">&nbsp;{{tile.value}}{{tile.unit}}</p></div>',
             replace: true,
             scope: {
                 tile: '=',
