@@ -32,6 +32,7 @@ This project can be a template for many other projects which need to connect the
 3. Grove Temperature Sensor
 4. Grove Rotary Angle Sensor
 5. Grove Light Sensor
-3. Green Led + 1 kOhm Resistor
-4. Red Led + 1 kOhm Resistor
-5. Yellow Led + 1 kOhm Resistor
+6. Green Led + 1 kOhm Resistor
+7. Red Led + 1 kOhm Resistor
+8. Yellow Led + 1 kOhm Resistor
+9. Grove 2x16 LCD Display (connected via i2c)
