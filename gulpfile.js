@@ -8,6 +8,7 @@ gulp.task('vet', function() {
     log('Analyzing source code with JSHint and JSCS');
     return gulp
         .src(config.alljs)
+        .pipe($.plumber())
         .pipe($.if(args.verbose, $.print()))
         .pipe($.jscs())
         .pipe($.jshint())
