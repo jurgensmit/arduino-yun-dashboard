@@ -19,6 +19,14 @@ gulp.task('vet', function() {
 // Default Task
 gulp.task('default', ['vet']);
 
+gulp.task('deploy-web', ['vet'], function() {
+    return gulp
+        .src('./AtherosAR9331/**/*.*')
+        .pipe($.plumber())
+        .pipe($.if(args.verbose, $.print()))
+        .pipe($.sftp(config.sftpOptions));
+});
+
 function log(message) {
     if (typeof message === 'object') {
         for (var item in message) {
