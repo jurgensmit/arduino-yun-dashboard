@@ -1,9 +1,15 @@
+/*
+ * Gulp file for the Arduino Yún Dashboard application
+ */
 var gulp = require('gulp');
 var args = require('yargs').argv;
 var config = require('./gulp.config')();
 
 var $ = require('gulp-load-plugins')({lazy: true});
 
+/*
+ * Analyze the JavaScript files with JSSC and JSHint
+ */
 gulp.task('vet', function() {
     log('Analyzing source code with JSHint and JSCS');
     return gulp
@@ -16,10 +22,11 @@ gulp.task('vet', function() {
         .pipe($.jshint.reporter('fail'));
 });
 
-// Default Task
-gulp.task('default', ['vet']);
-
+/*
+ * Deploy the web to the Atheros AR9331 Linux microcomputer on the Arduino Yún board
+ */
 gulp.task('deploy-web', ['vet'], function() {
+    log('Deploying web to Atheros AR9331');
     return gulp
         .src('./AtherosAR9331/**/*.*')
         .pipe($.plumber())
@@ -27,6 +34,14 @@ gulp.task('deploy-web', ['vet'], function() {
         .pipe($.sftp(config.sftpOptions));
 });
 
+/*
+ * The task to run when starting gulp without any specific task to run
+ */
+gulp.task('default', ['vet']);
+
+/*
+ * Function to log a message to the console
+ */
 function log(message) {
     if (typeof message === 'object') {
         for (var item in message) {
