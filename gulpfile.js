@@ -10,7 +10,7 @@ var $ = require('gulp-load-plugins')({lazy: true});
 /*
  * Analyze the JavaScript files with JSSC and JSHint
  */
-gulp.task('vet', function() {
+gulp.task('analyze-code', function() {
     log('Analyzing source code with JSHint and JSCS');
     return gulp
         .src(config.alljs)
@@ -25,7 +25,7 @@ gulp.task('vet', function() {
 /*
  * Deploy the web to the Atheros AR9331 Linux microcomputer on the Arduino Yún board
  */
-gulp.task('deploy-web', ['vet'], function() {
+gulp.task('deploy-web', ['analyze-code'], function() {
     log('Deploying web to Atheros AR9331');
     return gulp
         .src('./AtherosAR9331/**/*.*')
@@ -37,7 +37,7 @@ gulp.task('deploy-web', ['vet'], function() {
 /*
  * The task to run when starting gulp without any specific task to run
  */
-gulp.task('default', ['vet']);
+gulp.task('default', ['analyze-code']);
 
 /*
  * Function to log a message to the console

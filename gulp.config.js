@@ -3,7 +3,7 @@ module.exports = function () {
 
         // all js to vet
         alljs: [
-            './AtherosAR9331/public/**/*.js',
+            './AtherosAR9331/public/*.js',
             './*.js'
         ],
 
