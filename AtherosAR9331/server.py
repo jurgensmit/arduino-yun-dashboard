@@ -152,7 +152,7 @@ def main():
         handlers = [
             (r"/ws", WebSocketHandler),
             (r"/", IndexHandler),
-            (r"/(.*)", tornado.web.StaticFileHandler, { "path": "./public" })
+            (r"/(.*)", tornado.web.StaticFileHandler, { "path": "/root/public" })
         ],
         queue = taskQ
     )
