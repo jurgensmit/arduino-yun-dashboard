@@ -17,6 +17,8 @@ import time
 import multiprocessing
 import serialProcess
 
+import socket, subprocess, re
+
 # The default port to use for the server
 define("port", default=8080, help="run on the given port", type=int)
 
@@ -130,6 +132,20 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             q.put(arduino_message)
 
 ################################################################
+# Return the first ip address of the server
+################################################################
+def getIPAddress():
+    p = subprocess.Popen(["ifconfig"], stdout=subprocess.PIPE)
+    ifc_resp = p.communicate()
+    patt = re.compile(r'inet\s*\w*\S*:\s*(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})')
+    addresses = patt.findall(ifc_resp[0])
+    filteredAddresses = [address for address in addresses if address != "127.0.0.1"]
+    address = "127.0.0.1"
+    if len(filteredAddresses) > 0:
+        address = filteredAddresses[0]
+    return address
+     
+################################################################
 # Main
 ################################################################
 def main():
@@ -145,6 +161,9 @@ def main():
     # the current arduino values
     time.sleep(1)
     taskQ.put("@X:@")
+    
+    # Send the current IP Adress to be displayed on the LCD of the Arduino
+    taskQ.put("@M:" + getIPAddress() + "@")
 
     tornado.options.parse_command_line()
 

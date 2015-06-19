@@ -84,7 +84,7 @@ void printMessage(const String& message) {
 /*
  * Serial Communication 
  */
-byte commandBuffer[8];
+byte commandBuffer[20];
 int bufferPointer = 0;
 
 /*
@@ -96,9 +96,8 @@ void handleIncomingMessages() {
     {
       byte data = Serial1.read();
       if(data == '@') {
-        // Print the received message on the LCD
+        // Terminate the command
         commandBuffer[bufferPointer] = '\0';
-        printMessage((char *)commandBuffer);
         // Handle the message
         handleMessage();
         bufferPointer = 0;
@@ -125,11 +124,21 @@ void handleMessage() {
       case 'L': 
         toggleLed(commandBuffer[2] - '0'); 
         break;
+      case 'M':
+        showMessage((char *)&commandBuffer[2]);
+        break;
       case 'X':
         sendLatestValues();
         break;
     }
   }
+}
+
+/*
+ * Show a message on the LCD display  
+ */
+void showMessage(char *message) {
+  printMessage(message);
 }
 
 /*
