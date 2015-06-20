@@ -23,7 +23,7 @@ This project can be a template for many other projects which need to connect the
 9. Let the web server software automatically start when the Atheros boots
   * Add the line "python /root/server.py" to /etc/rc.local
 10. Reboot the Atheros
-11. In a browser navigate to http://<the ip address of your yun>:8080
+11. In a browser navigate to http://\<the ip address of your yun\>:8080
 
 ## What you need
 
