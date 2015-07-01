@@ -7,32 +7,41 @@
  * - A potmeter connected to anlog port A0
  * - A temperature sensor connected to analog port A1
  * - A photoresistor connected to analog port A2
+ * - A DHTxx temperature & humidity sensor
  * - A green led connected to pin 10
  * - A red led connected to pin 11
  * - A yellow led connected to pin 9
+ *
+ * (c) 2015 Jurgen Smit. All rights reserved.
  */
 
 #include <NewPing.h>
 #include <Wire.h>
 #include <math.h>
+#include <DHT.h>
 #include "rgb_lcd.h"
 
-#define TRIGGER_PIN         13    // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define ECHO_PIN            12    // Arduino pin tied to echo pin on the ultrasonic sensor.
-#define MAX_DISTANCE        42    // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
-#define RED_LED_PIN         11    // Arduino pin tied to the anode of the red led
-#define GREEN_LED_PIN       10    // Arduino pin tied to the anode of the green led
-#define YELLOW_LED_PIN      9     // Arduino pin tied to the anode of the yellow led
-#define TEMPERATURE_PIN     1     // Arduino (analog) pin tied to the temperature sensor
-#define PHOTORESISTOR_PIN   2     // Arduino (analog) pin tied to the photoresistor
-#define POTMETER_PIN        0     // Arduino (analog) pin tied to the potmeter
-#define DISTANCE_TOKEN      "D:"  // Token to prepend to the output when outputing the distance to the serial port
-#define TEMPERATURE_TOKEN   "T:"  // Token to prepend to the output when outputing the temperature to the serial port
-#define ANGLE_TOKEN         "A:"  // Token to prepend to the output when outputing the angle to the serial port
-#define PHOTORESISTOR_TOKEN "P:"  // Token to prepend to the output when outputing the light to the serial port
-#define LEDSTATUS_TOKEN     "L:"  // Token to prepend to the output when outputing the led status to the serial port
+#define TRIGGER_PIN          13    // Arduino pin tied to trigger pin on the ultrasonic sensor.
+#define ECHO_PIN             12    // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define MAX_DISTANCE         42    // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
+#define RED_LED_PIN          11    // Arduino pin tied to the anode of the red led
+#define GREEN_LED_PIN        10    // Arduino pin tied to the anode of the green led
+#define YELLOW_LED_PIN       9     // Arduino pin tied to the anode of the yellow led
+#define TEMPERATURE_PIN      1     // Arduino (analog) pin tied to the temperature sensor
+#define PHOTORESISTOR_PIN    2     // Arduino (analog) pin tied to the photoresistor
+#define POTMETER_PIN         0     // Arduino (analog) pin tied to the potmeter
+#define DHT_PIN              8     // Arduino pin tied to the DHT temperature and humidity sensor
+#define DHT_TYPE             DHT11 // The type of DHT sensor we are using (DHT11, DHT21 or DHT22)
+#define DISTANCE_TOKEN       "D:"  // Token to prepend to the output when outputing the distance to the serial port
+#define TEMPERATURE_TOKEN    "T:"  // Token to prepend to the output when outputing the temperature to the serial port
+#define ANGLE_TOKEN          "A:"  // Token to prepend to the output when outputing the angle to the serial port
+#define PHOTORESISTOR_TOKEN  "P:"  // Token to prepend to the output when outputing the light to the serial port
+#define LEDSTATUS_TOKEN      "L:"  // Token to prepend to the output when outputing the led status to the serial port
+#define HUMIDITY_TOKEN       "H:"  // Token to prepend to the output when outputing the humidity to the serial port
+#define DHTTEMPERATURE_TOKEN "t:"  // Token to prepend to the output when outputing the DHT temperature to the serial port
 
 NewPing sonar(TRIGGER_PIN, ECHO_PIN);  
+DHT dht(DHT_PIN, DHT_TYPE);
 rgb_lcd lcd;
 
 void setup() {
@@ -43,7 +52,9 @@ void setup() {
   pinMode(YELLOW_LED_PIN, OUTPUT);
   
   lcd.clear();
-  lcd.print("Dashboard");
+  lcd.print(F("Dashboard"));
+  
+  dht.begin();
   
   Serial1.begin(115200);
   
@@ -78,7 +89,7 @@ unsigned int getDistance() {
  */
 void printMessage(const String& message) {
   lcd.setCursor(0, 1);
-  lcd.print(message + String("                "));
+  lcd.print(message + String(F("                ")));
 }
 
 /*
@@ -156,6 +167,8 @@ unsigned int latestTemperature = -1;
 unsigned int latestAngle = -1;
 unsigned int latestDistance = -1;
 unsigned int latestLight = -1;
+unsigned int latestHumidity = -1;
+unsigned int latestDHTTemperature = -1;
 
 /*
  * Measure and return the current temperature
@@ -173,6 +186,22 @@ unsigned int getTemperature() {
  */
 unsigned int getAngle() {
   return analogRead(POTMETER_PIN);
+}
+
+/*
+ * Measure and return the humidity
+ */
+unsigned int getHumidity() {
+  float humidity = dht.readHumidity();
+  return (unsigned int) humidity;
+}
+
+/*
+ * Measure and return the temperature from the DHT sensor
+ */
+unsigned int getDHTTemperature() {
+  float temperature = dht.readTemperature();
+  return (unsigned int) temperature;
 }
 
 /*
@@ -194,6 +223,20 @@ void sendLatestDistance() {
  */
 void sendLatestTemperature() {
   sendValue(TEMPERATURE_TOKEN, latestTemperature);
+}
+
+/*
+ * Send the latest measured humidity via the serial port
+ */
+void sendLatestHumidity() {
+  sendValue(HUMIDITY_TOKEN, latestHumidity);
+}
+
+/*
+ * Send the latest measured DHT sensor temperature via the serial port
+ */
+void sendLatestDHTTemperature() {
+  sendValue(DHTTEMPERATURE_TOKEN, latestDHTTemperature);
 }
 
 /*
@@ -257,6 +300,8 @@ void sendLatestValues() {
   sendLatestTemperature();
   sendLatestAngle();
   sendLatestLight();
+  sendLatestHumidity();
+  sendLatestDHTTemperature();
   sendAllLedsStatus();
 }
 
@@ -266,6 +311,8 @@ void loop() {
   unsigned int temperature = getTemperature();
   unsigned int angle = getAngle();
   unsigned int light = getLight();
+  unsigned int dhtTemperature = getDHTTemperature();
+  unsigned int humidity = getHumidity();
   
   // Send any changes to the serial port
   if(distance != latestDistance) {
@@ -286,6 +333,16 @@ void loop() {
   if(light != latestLight) {
     latestLight = light;
     sendLatestLight();
+  }
+
+  if(humidity != latestHumidity) {
+    latestHumidity = humidity;
+    sendLatestHumidity();
+  }
+
+  if(dhtTemperature != latestDHTTemperature) {
+    latestDHTTemperature = dhtTemperature;
+    sendLatestDHTTemperature();
   }
 
   // Wait a little bit to not overload the serial port with updates    

@@ -45,6 +45,10 @@ def ProcessArduinoMessage(message):
             ProcessTemperature(parameters)
         elif command == "P":   
             ProcessLight(parameters)
+        elif command == "H":   
+            ProcessHumidity(parameters)
+        elif command == "t":   
+            ProcessDHTTemperature(parameters)
 
 def ProcessDistance(distance):
     latestData["distance"] = int(distance)
@@ -62,6 +66,14 @@ def ProcessAngle(angle):
     latestData["angle"] = int(angle)
     SendLatestDataToClients()
     
+def ProcessHumidity(humidity):
+    latestData["humidity"] = int(humidity)
+    SendLatestDataToClients()
+
+def ProcessDHTTemperature(temperature):
+    latestData["dhtTemperature"] = int(temperature)
+    SendLatestDataToClients()
+
 def SendLatestDataToClients():
     for c in clients:
         c.write_message(json.dumps(latestData))

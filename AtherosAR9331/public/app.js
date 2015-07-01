@@ -21,6 +21,12 @@
                 light: {
                     order: 4, title: 'Light'
                 },
+                humidity: {
+                    order: 4, title: 'Humidity', unit: '%'
+                },
+                dhtTemperature: {
+                    order: 4, title: 'DHT Temp.', unit: '°C'
+                },
                 redLed: {
                     order: 5, title: 'Red Led', class: 'red'
                 },
@@ -38,6 +44,8 @@
                 vm.tiles.distance.value = data.distance;
                 vm.tiles.angle.value = data.angle;
                 vm.tiles.light.value = data.light;
+                vm.tiles.humidity.value = data.humidity;
+                vm.tiles.dhtTemperature.value = data.dhtTemperature;
                 vm.tiles.redLed.value = data.redLedState;
                 vm.tiles.yellowLed.value = data.yellowLedState;
                 vm.tiles.greenLed.value = data.greenLedState;
