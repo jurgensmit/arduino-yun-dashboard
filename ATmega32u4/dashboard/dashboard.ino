@@ -15,11 +15,11 @@
  * (c) 2015 Jurgen Smit. All rights reserved.
  */
 
-#include <NewPing.h>
 #include <Wire.h>
 #include <math.h>
-#include <DHT.h>
+#include "DHT.h"
 #include "rgb_lcd.h"
+#include "NewPing.h"
 
 #define TRIGGER_PIN          13    // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define ECHO_PIN             12    // Arduino pin tied to echo pin on the ultrasonic sensor.

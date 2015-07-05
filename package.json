@@ -25,6 +25,7 @@
     "gulp-plumber": "^1.0.1",
     "gulp-print": "^1.1.0",
     "gulp-sftp": "^0.1.4",
+    "gulp-shell": "^0.4.2",
     "gulp-util": "^3.0.5",
     "jshint-stylish": "^2.0.0",
     "yargs": "^3.10.0"

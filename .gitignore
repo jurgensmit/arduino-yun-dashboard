@@ -1,2 +1,4 @@
 node_modules/
 .ftppass
+.pioenvs/
+.sconsign.dblite
